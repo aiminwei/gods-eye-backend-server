@@ -61,6 +61,13 @@ def getip():
         host = "127.0.0.1"
     return host
 
+'''
+def getip():
+    host = "18.144.83.138"
+    return host
+'''
+
+
 
 def find_longest_common_prefix(values):
     result = ""

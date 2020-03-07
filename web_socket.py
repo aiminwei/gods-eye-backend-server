@@ -35,7 +35,7 @@ def get_headers(data):
     :return: request header dictionary
     """
     header_dict = {}
-    data = str(data, encoding="utf-8")
+    data = str(data)
     """
     request header format
     b'
@@ -89,16 +89,16 @@ def get_data(info):
     for i in range(len(decoded)):
         chunk = decoded[i] ^ mask[i % 4]
         bytes_list.append(chunk)
-    body = str(bytes_list, encoding='utf-8')
+    body = str(bytes_list)
     return body
 
 
-# 等待用户连接
+# connection
 conn, addr = sock.accept()
 print("conn from==>", conn, addr)
-# 获取握手消息，magic string ,sha1加密
-# 发送给客户端
-# 握手消息
+# magic string ,sha1
+# send to client
+# handshake
 data = conn.recv(8096)
 headers = get_headers(data)
 
@@ -116,11 +116,15 @@ ac = base64.b64encode(hashlib.sha1(value.encode('utf-8')).digest())
 response_str = response_tpl % (ac.decode('utf-8'), headers['Host'], headers['url'])
 
 # 响应【握手】信息
-conn.send(bytes(response_str, encoding='utf-8'))
+conn.send(bytes(response_str))
 
 # 可以进行通信--接收客户端发送的消息
 while True:
     data = conn.recv(8096)
     data = get_data(data)
+    try:
+        conn.send("hello".encode())
+    except:
+        conn.close()
     print("Receive msg==>", data)
 

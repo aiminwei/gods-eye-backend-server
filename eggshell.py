@@ -152,8 +152,3 @@ class EggShell:
             except KeyboardInterrupt:
                 print "\nBye!"
                 exit()
-
-
-if __name__ == "__main__":
-    eggshell = EggShell()
-    eggshell.menu()

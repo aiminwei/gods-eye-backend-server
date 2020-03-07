@@ -24,7 +24,20 @@ class Session:
 		self.needs_refresh = False
 
 
-	def interact(self):
+	def init_interact(self):
+		"""Start Interacting with an active session"""
+		readline.clear_history()
+		readline.set_completer(self.tab_complete)
+		readline.parse_and_bind('tab: complete')
+
+		command_modules = self.server.get_modules(self.type)
+		cmd = "picture"
+		cmd_data = {"cmd": cmd, "args": ""}
+		file_name = command_modules[cmd].run(self, cmd_data)
+		return file_name
+
+
+	def interact(self, raw):
 		"""Interact with an active session"""
 		readline.clear_history()
 		readline.set_completer(self.tab_complete)
@@ -34,12 +47,10 @@ class Session:
 		while 1:
 			try:
 				#prepare command
-				raw = raw_input(self.get_handle())
-				if not raw or raw.replace(" ","") == "":
-					continue
 				cmd = raw.split()[0]
 				cmd_data = {"cmd": cmd, "args":raw[len(cmd) + 1:]}
-				
+				cmd_res = ""
+
 				if self.needs_refresh:
 					# don't do anything if we are in the middle of updating session
 					pass
@@ -51,9 +62,11 @@ class Session:
 				elif cmd == "help":
 					self.show_commands()
 				elif cmd in command_modules.keys():
-					command_modules[cmd].run(self,cmd_data)
+					cmd_res = command_modules[cmd].run(self,cmd_data)
+					return cmd_res
 				elif cmd in self.server.modules_local.keys():
-					self.server.modules_local[cmd].run(self,cmd_data)
+					cmd_res = self.server.modules_local[cmd].run(self,cmd_data)
+					return cmd_res
 				else:
 					try:
 						result = self.send_command(cmd_data)
@@ -61,6 +74,7 @@ class Session:
 							print result.rstrip()
 					except KeyboardInterrupt:
 						self.send_command({"cmd":"killtask"})
+						return
 			except KeyboardInterrupt:
 				try:
 					print ""

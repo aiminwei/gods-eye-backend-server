@@ -1,0 +1,44 @@
+{
+  "Person": [
+    {
+      "name":     "Ruchir",
+      "picture":  "DB/Ruchir/ruchir_face.jpg",
+      "privacy":  "DB/Ruchir/profile_Ruchir Shah.json"
+    },
+    {
+      "name":     "Gagan",
+      "picture":  "DB/Gagan/gagan_face.jpg",
+      "privacy":  "DB/Gagan/profile_Gagan Vasudev.json"
+    },
+    {
+      "name":     "Maria",
+      "picture":  "DB/Maria/maria_face.jpg",
+      "privacy":  "DB/Maria/profile_Maria Fernandes.json"
+    },
+    {
+      "name":     "Santhosh",
+      "picture":  "DB/Santhosh/santhosh_face.jpg",
+      "privacy":  "DB/Santhosh/profile_Santhosh Narayanan.json"
+    },
+    {
+      "name":     "Shwetha",
+      "picture":  "DB/Shwetha/shwetha_face.jpg",
+      "privacy":  "DB/Shwetha/profile_Shwetha Rao.json"
+    },
+    {
+      "name":     "Victor",
+      "picture":  "DB/Victor/victor_face.jpg",
+      "privacy":  "DB/Victor/profile_Victor Zamarian.json"
+    },
+    {
+      "name":     "Yash",
+      "picture":  "DB/Yash/yash_face.jpg",
+      "privacy":  "DB/Yash/profile_Yash Patel.json"
+    },
+    {
+      "name":     "Yatin",
+      "picture":  "DB/Yatin/yatin_face.jpg",
+      "privacy":  "DB/Yatin/profile_Yatin Gupta.json"
+    }
+  ]
+}

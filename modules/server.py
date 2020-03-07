@@ -47,27 +47,9 @@ class Server:
 
     def set_host_port(self):
         try:
-            lhost = h.getip()
-            lport = None
-            choice = raw_input(h.info_general_raw("SET LHOST (Leave blank for "+lhost+")>"))
-            if choice != "":
-                lhost = choice
-            h.info_general("LHOST = " + lhost)
-            while True:
-                lport = raw_input(h.info_general_raw("SET LPORT (Leave blank for 4444)>"))
-                if not lport:
-                    lport = 4444
-                try:
-                    lport = int(lport)
-                except ValueError:
-                    h.info_general("invalid port, please enter a valid integer")
-                    continue
-                if lport < 1024:
-                    h.info_general("invalid port, please enter a value >= 1024")
-                    continue
-                break
-            h.info_general("LPORT = " + str(lport))
-            self.host = socket.gethostbyname(lhost)
+            lhost = "192.168.1.103"
+            lport = 4444
+            self.host = lhost
             self.port = lport
             return True
         except KeyboardInterrupt:
@@ -92,8 +74,8 @@ class Server:
 
     def start_multi_handler(self):
         self.multihandler.start_background_server()
-        self.multihandler.interact()
-        print "end start multihandler"
+#        self.multihandler.interact()
+        print "start multihandler"
 
 
     def craft_payload(self,device_arch):
@@ -215,4 +197,33 @@ class Server:
         old_session.username = new_session.username
         old_session.type = new_session.type
 
-   
+
+'''
+    def set_host_port(self):
+        try:
+            lhost = h.getip()
+            lport = None
+            choice = raw_input(h.info_general_raw("SET LHOST (Leave blank for "+lhost+")>"))
+            if choice != "":
+                lhost = choice
+            h.info_general("LHOST = " + lhost)
+            while True:
+                lport = raw_input(h.info_general_raw("SET LPORT (Leave blank for 4444)>"))
+                if not lport:
+                    lport = 4444
+                try:
+                    lport = int(lport)
+                except ValueError:
+                    h.info_general("invalid port, please enter a valid integer")
+                    continue
+                if lport < 1024:
+                    h.info_general("invalid port, please enter a value >= 1024")
+                    continue
+                break
+            h.info_general("LPORT = " + str(lport))
+            self.host = socket.gethostbyname(lhost)
+            self.port = lport
+            return True
+        except KeyboardInterrupt:
+            return
+'''
