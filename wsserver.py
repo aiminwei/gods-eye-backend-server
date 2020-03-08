@@ -90,9 +90,9 @@ class WsServer:
         res_key = base64.b64encode(hashlib.sha1(sec_key + MAGIC_STRING).digest())
         str_handshake = HANDSHAKE_STRING.replace('{1}', res_key)
         if 'Origin' in headers:
-            str_handshake = str_handshake.replace('{2}', headers['Origin']).replace('{3}', headers['Host'])
+            str_handshake = str_handshake.replace('{2}', headers['Origin'])
         else:
-            str_handshake = str_handshake.replace('{2}', headers['Origin']).replace('{3}', "*")
+            str_handshake = str_handshake.replace('{2}', "*")
         if 'Host' in headers:
             str_handshake = str_handshake.replace('{3}', headers['Host'])
         else:
