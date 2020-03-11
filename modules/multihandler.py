@@ -15,8 +15,8 @@ class MultiHandler:
 		self.victims = dict()
 		self.victims_modify = False
 ###		For test
-###		self.victims = {"name": "Aimin Wei", "age": 24, "gender": "male"}
-###		self.victims_modify = True
+		self.victims = {1: {"name": "Ruchir Shah", "picture": "DB/Ruchir/ruchir_face.JPG", "privacy": "DB/Ruchir/profile_Ruchir Shah.json"}}
+		self.victims_modify = True
 		self.handle = h.COLOR_INFO + "MultiHandler" + h.ENDC + "> "
 		self.is_running = False
 		self.load_person_info()
