@@ -14,7 +14,7 @@ from eggshell import EggShell
 class WsServer:
     def __init__(self, eggshell):
         self.host = '0.0.0.0'
-        self.port = 5002
+        self.port = 5000
         self.buffer_size = 1024
         self.eggshell = eggshell
         self.ready = False
@@ -171,12 +171,16 @@ class WsServer:
 
 
     def push_data(self, conn, address, thread_name):
-        self.update_info(conn)
-        while True:
-            if self.eggshell.server.multihandler.victims_modify:
-                self.update_info(conn)
-            else:
-                time.sleep(3)
+        try:
+            self.update_info(conn)
+            while True:
+                if self.eggshell.server.multihandler.victims_modify:
+                    self.update_info(conn)
+                else:
+                    time.sleep(3)
+        except:
+            print ("End connection")
+            return
 
 
     def update_info(self, conn):
@@ -194,7 +198,7 @@ class WsServer:
         index = 1
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.bind((self.host, self.port))
-        sock.listen(100)
+        sock.listen(10)
 
         print ('\r\n\r\nWebsocket server start, wait for connect!')
         print ('- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -')
