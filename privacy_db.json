@@ -2,27 +2,27 @@
   "Person": [
     {
       "name":     "Ruchir",
-      "picture":  "DB/Ruchir/ruchir_face.JPG",
+      "picture":  "DB/Ruchir/ruchir_face.jpg",
       "privacy":  "DB/Ruchir/profile_Ruchir Shah.json"
     },
     {
       "name":     "Dipesh",
-      "picture":  "DB/Dipesh/Dipesh_face.JPG",
+      "picture":  "DB/Dipesh/Dipesh_face.jpg",
       "privacy":  "DB/Dipesh/profile_Dipesh Chauhan.json"
     },
     {
       "name":     "Divij",
-      "picture":  "DB/Divij/divij_face.JPG",
+      "picture":  "DB/Divij/divij_face.jpg",
       "privacy":  "DB/Divij/profile_Divij Bhatia.json"
     },
     {
       "name":     "Wenbin",
-      "picture":  "DB/Wenbin/wenbin_face.JPG",
+      "picture":  "DB/Wenbin/wenbin_face.jpg",
       "privacy":  "DB/Wenbin/profile_Wenbin Li.json"
     },
     {
       "name":     "Aimin",
-      "picture":  "DB/Aimin/aimin_face.JPG",
+      "picture":  "DB/Aimin/aimin_face.jpg",
       "privacy":  "DB/Aimin/profile_Aimin Wei.json"
     },
     {
